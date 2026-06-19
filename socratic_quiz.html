@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGap 🦊 - Socratic AI Quiz Simulator</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Reset & Variable Tokens */
+        :root {
+            --bg-color: #f4fce8; /* Cozy light avocado */
+            --text-primary: #171e12; /* Dark charcoal */
+            --color-green: #58cc02; /* Primary Green */
+            --color-green-dark: #46a302;
+            --color-teal: #00cd9c; /* Secondary Green/Teal */
+            --color-teal-dark: #00a37c;
+            --color-blue: #1cb0f6; /* Info Blue */
+            --color-blue-dark: #1899d6;
+            --color-yellow: #ffc800; /* Tertiary Yellow */
+            --color-yellow-dark: #e0b000;
+            --color-orange: #ff9600; /* Accent Orange */
+            --color-orange-dark: #d97f00;
+            --color-red: #ff4b4b; /* Error Red */
+            --color-red-dark: #ea2b2b;
+            
+            --border-radius: 16px;
+            --shadow-3d: 0 6px 0 var(--text-primary);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .brand {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Header Style */
+        header {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(23, 30, 18, 0.1);
+        }
+
+        .brand {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .brand span {
+            color: var(--color-green);
+        }
+
+        .header-stats {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 2px solid var(--text-primary);
+            border-bottom: 5px solid var(--text-primary);
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.1s ease;
+        }
+
+        /* 3D Button Utility */
+        .btn-3d {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border: 2px solid var(--text-primary);
+            border-radius: var(--border-radius);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.1s ease, border-bottom-width 0.1s ease;
+            user-select: none;
+            outline: none;
+        }
+
+        .btn-green {
+            background-color: var(--color-green);
+            border-bottom: 5px solid var(--color-green-dark);
+        }
+        .btn-green:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+        }
+
+        .btn-yellow {
+            background-color: var(--color-yellow);
+            color: var(--text-primary);
+            border-bottom: 5px solid var(--color-yellow-dark);
+        }
+        .btn-yellow:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+        }
+
+        .btn-blue {
+            background-color: var(--color-blue);
+            border-bottom: 5px solid var(--color-blue-dark);
+        }
+        .btn-blue:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+        }
+
+        .btn-orange {
+            background-color: var(--color-orange);
+            border-bottom: 5px solid var(--color-orange-dark);
+        }
+        .btn-orange:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+        }
+
+        /* Main Workspace */
+        main {
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            flex-grow: 1;
+        }
+
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Column: Editor & Workspace */
+        .workspace-card {
+            background: white;
+            border: 2px solid var(--text-primary);
+            border-bottom: 6px solid var(--text-primary);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed rgba(23, 30, 18, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .question-difficulty {
+            font-size: 14px;
+            font-weight: 600;
+            background: #fff9db;
+            padding: 4px 8px;
+            border: 1px solid var(--text-primary);
+            border-radius: 8px;
+        }
+
+        .question-description {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .code-editor-container {
+            position: relative;
+            border: 2px solid var(--text-primary);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: #1e1e1e;
+        }
+
+        .editor-header {
+            background: #2d2d2d;
+            padding: 10px 16px;
+            border-bottom: 2px solid var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            color: #ccc;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            height: 250px;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            padding: 15px;
+            border: none;
+            outline: none;
+            resize: none;
+            line-height: 1.5;
+        }
+
+        .button-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* Right Column: Socratic Coach Sidebar */
+        .coach-sidebar {
+            background: white;
+            border: 2px solid var(--text-primary);
+            border-bottom: 6px solid var(--text-primary);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .coach-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 2px solid rgba(23, 30, 18, 0.05);
+            padding-bottom: 15px;
+        }
+
+        .coach-avatar {
+            width: 60px;
+            height: 60px;
+            background: #fff3e0;
+            border: 2px solid var(--text-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .coach-details h3 {
+            font-size: 18px;
+        }
+
+        .coach-details p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .chat-bubble {
+            background-color: var(--bg-color);
+            border: 2px solid var(--text-primary);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chat-bubble::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: -10px;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent var(--text-primary);
+        }
+
+        .chat-bubble::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: -7px;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent var(--bg-color);
+            z-index: 1;
+        }
+
+        .citation-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--color-blue);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--text-primary);
+        }
+
+        /* Mastery Progress Bar */
+        .progress-container {
+            width: 150px;
+            height: 14px;
+            background: #e0e0e0;
+            border: 2px solid var(--text-primary);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--color-teal);
+            width: 25%;
+            transition: width 0.3s ease;
+        }
+
+        /* Alerts & Sentinels */
+        .alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .alert-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .alert-box {
+            background: white;
+            border: 3px solid var(--text-primary);
+            border-bottom: 10px solid var(--text-primary);
+            border-radius: var(--border-radius);
+            max-width: 480px;
+            width: 90%;
+            padding: 30px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transform: scale(0.9);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .alert-overlay.show .alert-box {
+            transform: scale(1);
+        }
+
+        .alert-icon {
+            font-size: 64px;
+        }
+
+        .alert-title {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .alert-desc {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        /* Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse-animation 1.5s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Stats -->
+    <header>
+        <div class="brand">
+            <span>🦊</span> EduGap
+        </div>
+        <div class="header-stats">
+            <div class="stat-card" id="elo-card" title="Điểm Elo năng lực của sinh viên">
+                🎯 <span id="student-elo">1200</span> ELO
+            </div>
+            <div class="stat-card" title="Mức độ tinh thông của sinh viên qua BKT model">
+                🧠 Mastery: 
+                <div class="progress-container">
+                    <div class="progress-bar" id="mastery-bar"></div>
+                </div>
+                <span id="mastery-text">25%</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Workspace Main Grid -->
+    <main>
+        <!-- Coding Board -->
+        <div class="workspace-card">
+            <div class="question-meta">
+                <h2>Bài 1: Đệ Quy Fibonacci</h2>
+                <div class="question-difficulty">Độ khó: 1250 Elo</div>
+            </div>
+            
+            <div class="question-description">
+                <p>Viết một hàm đệ quy bằng Python mang tên <code>fib(n)</code> để tính toán số Fibonacci thứ n.</p>
+                <p style="margin-top: 10px; font-weight: 600;">Chú ý: Trình chỉnh sửa có tích hợp hệ thống phát hiện Academic Integrity (chống copy-paste bài từ nguồn ngoài).</p>
+            </div>
+
+            <div class="code-editor-container">
+                <div class="editor-header">
+                    <span>main.py</span>
+                    <span>Language: Python 3</span>
+                </div>
+                <textarea class="editor-textarea" id="editor" placeholder="# Viết code Python của bạn ở đây...
+def fib(n):
+    # Hãy tự gõ tay dòng code của bạn
+    "></textarea>
+            </div>
+
+            <div class="button-bar">
+                <button class="btn-3d btn-green" id="btn-submit">
+                    ✔ Gửi Bài Giải
+                </button>
+                <button class="btn-3d btn-yellow" id="btn-hint">
+                    🦊 Nhận Gợi Ý Socratic
+                </button>
+                <button class="btn-3d btn-blue" id="btn-slide">
+                    📄 Tra Cứu Slide
+                </button>
+                <button class="btn-3d btn-orange" id="btn-paste-sim">
+                    📋 Mô Phỏng Dán Bài (Cheat)
+                </button>
+            </div>
+        </div>
+
+        <!-- Socratic Assistant Board -->
+        <div class="coach-sidebar">
+            <div class="coach-profile">
+                <div class="coach-avatar">🦊</div>
+                <div class="coach-details">
+                    <h3>Cáo Sofi</h3>
+                    <p>Gia sư Socratic của bạn</p>
+                </div>
+            </div>
+
+            <div class="chat-bubble" id="coach-bubble">
+                Chào bạn! Mình là Sofi. Bạn hãy thử tự hoàn thành hàm <code>fib(n)</code> đệ quy nhé. Nếu gặp khó khăn, hãy bấm nút nhận gợi ý bên dưới, mình sẽ hỗ trợ bạn từng bước để hiểu bản chất!
+            </div>
+
+            <div id="citation-container" style="display: none;">
+                <div class="citation-tag">
+                    📄 Slide Bài Giảng 4 - Trang 15
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Overlay Alerts -->
+    <div class="alert-overlay" id="alert-overlay">
+        <div class="alert-box" id="alert-box">
+            <div class="alert-icon" id="alert-icon">🚨</div>
+            <div class="alert-title" id="alert-title">Academic Integrity Warning</div>
+            <div class="alert-desc" id="alert-desc">Phát hiện hành động Copy-Paste mã nguồn từ bên ngoài! Hệ thống chống gian lận đã kích hoạt.</div>
+            <button class="btn-3d btn-orange" id="btn-alert-close" style="width: 100%;">Tôi Đã Hiểu</button>
+        </div>
+    </div>
+
+    <!-- Scripting for Interactions -->
+    <script>
+        // Web Audio API Synth for Premium Sound Effects
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'click') {
+                // Soft plop sound
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'hint') {
+                // Friendly high chime
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'warning') {
+                // Alert alarm sound
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(440, audioCtx.currentTime + 0.15);
+                osc.frequency.linearRampToValueAtTime(220, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'success') {
+                // Victory chime
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // E5
+                osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); // G5
+                osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.24); // C6
+                gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.6);
+            }
+        }
+
+        // DOM elements
+        const editor = document.getElementById('editor');
+        const studentEloEl = document.getElementById('student-elo');
+        const masteryBar = document.getElementById('mastery-bar');
+        const masteryText = document.getElementById('mastery-text');
+        const coachBubble = document.getElementById('coach-bubble');
+        const citationContainer = document.getElementById('citation-container');
+        
+        // Buttons
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnHint = document.getElementById('btn-hint');
+        const btnSlide = document.getElementById('btn-slide');
+        const btnPasteSim = document.getElementById('btn-paste-sim');
+        
+        // Modal
+        const alertOverlay = document.getElementById('alert-overlay');
+        const alertBox = document.getElementById('alert-box');
+        const alertIcon = document.getElementById('alert-icon');
+        const alertTitle = document.getElementById('alert-title');
+        const alertDesc = document.getElementById('alert-desc');
+        const btnAlertClose = document.getElementById('btn-alert-close');
+
+        // State variables
+        let elo = 1200;
+        let mastery = 25;
+        let hintLevel = 0;
+        let cheatTriggered = false;
+
+        // Hint ladders
+        const socraticHints = [
+            "Đệ quy cần có điểm dừng (Base case). Với số n nhỏ nhất nào (ví dụ: n=0 hay n=1) thì hàm <code>fib(n)</code> có thể trả về giá trị ngay mà không cần gọi lại chính nó?",
+            "Chính xác! base case sẽ là: <code>if n <= 1: return n</code>. Vậy với n > 1, công thức Fibonacci tổng quát dựa trên hai số đứng trước nó là gì?",
+            "Tuyệt vời! Công thức tổng quát là <code>fib(n-1) + fib(n-2)</code>. Bây giờ, hãy viết một hàm Python hoàn chỉnh kết hợp cả hai điều kiện trên nhé!"
+        ];
+
+        // Sfx setup for interactive elements
+        document.querySelectorAll('.btn-3d').forEach(btn => {
+            btn.addEventListener('mousedown', () => playSound('click'));
+        });
+
+        // Hint button interaction
+        btnHint.addEventListener('click', () => {
+            if (cheatTriggered) {
+                showModal("🚨 Đã Bị Khóa Gợi Ý", "Tài khoản của bạn đang bị đóng băng điểm ELO do phát hiện hành động sao chép mã nguồn từ ngoài. Hãy tự viết lại từ đầu.", "warning");
+                return;
+            }
+            
+            hintLevel++;
+            elo = Math.max(800, elo - 10);
+            mastery = Math.min(95, mastery + 8);
+            
+            studentEloEl.innerText = elo;
+            masteryBar.style.width = mastery + '%';
+            masteryText.innerText = mastery + '%';
+            
+            const hintIndex = Math.min(hintLevel - 1, socraticHints.length - 1);
+            coachBubble.innerHTML = `🦊 <strong>Gợi ý ${hintLevel}:</strong> ` + socraticHints[hintIndex];
+            citationContainer.style.display = 'block';
+            playSound('hint');
+        });
+
+        // Slide check
+        btnSlide.addEventListener('click', () => {
+            coachBubble.innerHTML = "🦊 <strong>Sofi đã tìm thấy tài liệu giúp bạn:</strong><br>📄 <strong>Slide Bài Giảng 4 - Trang 15:</strong><br><em>Định nghĩa số Fibonacci: F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2) cho n > 1.</em>";
+            citationContainer.style.display = 'block';
+        });
+
+        // Copy-Paste Detection
+        editor.addEventListener('paste', (e) => {
+            e.preventDefault(); // Block the paste action!
+            triggerCheatDetection();
+        });
+
+        btnPasteSim.addEventListener('click', () => {
+            editor.value = "def fib(n):\n    if n <= 1:\n        return n\n    return fib(n-1) + fib(n-2)";
+            triggerCheatDetection();
+        });
+
+        function triggerCheatDetection() {
+            cheatTriggered = true;
+            playSound('warning');
+            showModal("🚨 Academic Integrity Alert!", "Hệ thống phát hiện hành động sao chép-dán mã nguồn (Copy-Paste) từ clipboard bên ngoài vào. Điểm ELO của bạn đã bị đóng băng (+0 ELO) và hành vi này đã được gửi báo cáo lên giảng viên.", "warning");
+            document.getElementById('elo-card').style.borderColor = 'var(--color-red)';
+            document.getElementById('elo-card').style.borderBottomColor = 'var(--color-red-dark)';
+            document.getElementById('elo-card').style.color = 'var(--color-red)';
+        }
+
+        // Submit action
+        btnSubmit.addEventListener('click', () => {
+            const code = editor.value.replace(/\s+/g, '');
+            const hasBase = code.includes("n<=1") || code.includes("n==0") || code.includes("n<2");
+            const hasRec = code.includes("fib(n-1)+fib(n-2)") || code.includes("fib(n-2)+fib(n-1)");
+            
+            if (hasBase && hasRec) {
+                if (cheatTriggered) {
+                    showModal("✔ Kết Quả Đúng", "Mã nguồn chính xác. Tuy nhiên, điểm số không thay đổi vì bạn đã dán code gian lận trước đó.", "warning");
+                } else {
+                    const eloGain = Math.max(5, 25 - (hintLevel * 5));
+                    elo += eloGain;
+                    mastery = 100;
+                    
+                    studentEloEl.innerText = elo;
+                    masteryBar.style.width = '100%';
+                    masteryText.innerText = '100%';
+                    
+                    playSound('success');
+                    showModal("🎉 Xuất Sắc!", `Bạn đã giải quyết câu hỏi thành công!<br>📈 ELO tăng: <strong>+${eloGain} ELO</strong><br>🧠 Mức độ mastery: <strong>100% (Tinh thông)</strong>`, "success");
+                    coachBubble.innerHTML = "🦊 <strong>Chúc mừng!</strong> Bạn đã làm rất tốt khi tự tay giải quyết bài toán đệ quy này. Hãy tiếp tục phát huy ở các bài tập sau nhé!";
+                }
+            } else {
+                playSound('warning');
+                showModal("❌ Bài Giải Chưa Đúng", "Cú pháp đệ quy chưa chính xác hoặc thiếu trường hợp cơ bản (base case). Hãy thử xem gợi ý Socratic của mình nhé!", "error");
+            }
+        });
+
+        // Modal Functions
+        function showModal(title, text, type) {
+            alertTitle.innerHTML = title;
+            alertDesc.innerHTML = text;
+            
+            if (type === 'warning' || type === 'error') {
+                alertIcon.innerText = '🚨';
+                alertBox.style.borderColor = 'var(--color-red)';
+                alertBox.style.borderBottomColor = 'var(--color-red-dark)';
+                btnAlertClose.className = 'btn-3d btn-orange';
+            } else {
+                alertIcon.innerText = '🎉';
+                alertBox.style.borderColor = 'var(--color-green)';
+                alertBox.style.borderBottomColor = 'var(--color-green-dark)';
+                btnAlertClose.className = 'btn-3d btn-green';
+            }
+            
+            alertOverlay.classList.add('show');
+        }
+
+        btnAlertClose.addEventListener('click', () => {
+            alertOverlay.classList.remove('show');
+        });
+    </script>
+</body>
+</html>
