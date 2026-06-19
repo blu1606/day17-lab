@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduGap 🦊 - Socratic AI Quiz Simulator</title>
+    <title>AI Trợ Lý HR 🦊 - Prompter Sandbox</title>
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -225,10 +225,10 @@
 
         .editor-textarea {
             width: 100%;
-            height: 250px;
+            height: 220px;
             background-color: #1e1e1e;
             color: #d4d4d4;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
             font-size: 15px;
             padding: 15px;
             border: none;
@@ -243,7 +243,7 @@
             flex-wrap: wrap;
         }
 
-        /* Right Column: Socratic Coach Sidebar */
+        /* Right Column: Prompter Coach Sidebar */
         .coach-sidebar {
             background: white;
             border: 2px solid var(--text-primary);
@@ -413,16 +413,6 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .pulse {
-            animation: pulse-animation 1.5s infinite;
-        }
-
-        @keyframes pulse-animation {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
     </style>
 </head>
 <body>
@@ -430,14 +420,14 @@
     <!-- Header Stats -->
     <header>
         <div class="brand">
-            <span>🦊</span> EduGap
+            <span>🦊</span> AI Trợ Lý - HR
         </div>
         <div class="header-stats">
-            <div class="stat-card" id="elo-card" title="Điểm Elo năng lực của sinh viên">
+            <div class="stat-card" id="elo-card" title="Điểm Elo năng lực luyện prompt của HR">
                 🎯 <span id="student-elo">1200</span> ELO
             </div>
-            <div class="stat-card" title="Mức độ tinh thông của sinh viên qua BKT model">
-                🧠 Mastery: 
+            <div class="stat-card" title="Mức độ tinh thông prompt qua mô hình BKT">
+                🧠 Tinh thông: 
                 <div class="progress-container">
                     <div class="progress-bar" id="mastery-bar"></div>
                 </div>
@@ -451,59 +441,58 @@
         <!-- Coding Board -->
         <div class="workspace-card">
             <div class="question-meta">
-                <h2>Bài 1: Đệ Quy Fibonacci</h2>
+                <h2>Bài 1: Prompt Email Mời Phỏng Vấn</h2>
                 <div class="question-difficulty">Độ khó: 1250 Elo</div>
             </div>
             
             <div class="question-description">
-                <p>Viết một hàm đệ quy bằng Python mang tên <code>fib(n)</code> để tính toán số Fibonacci thứ n.</p>
-                <p style="margin-top: 10px; font-weight: 600;">Chú ý: Trình chỉnh sửa có tích hợp hệ thống phát hiện Academic Integrity (chống copy-paste bài từ nguồn ngoài).</p>
+                <p>Viết một <strong>prompt</strong> (câu lệnh tiếng Việt) yêu cầu AI tự động soạn thảo một <strong>Email mời phỏng vấn chuyên nghiệp</strong> gửi cho ứng viên lập trình viên Web Developer.</p>
+                <p style="margin-top: 10px; font-weight: 600;">Chú ý: Trình chỉnh sửa tích hợp hệ thống kiểm tra an toàn học thuật (Academic Integrity) chống copy prompt ăn sẵn.</p>
             </div>
 
             <div class="code-editor-container">
                 <div class="editor-header">
-                    <span>main.py</span>
-                    <span>Language: Python 3</span>
+                    <span>prompter.txt</span>
+                    <span>Format: Plain Text / Prompt</span>
                 </div>
-                <textarea class="editor-textarea" id="editor" placeholder="# Viết code Python của bạn ở đây...
-def fib(n):
-    # Hãy tự gõ tay dòng code của bạn
+                <textarea class="editor-textarea" id="editor" placeholder="# Hãy tự suy nghĩ và tự gõ prompt của bạn ở đây...
+Ví dụ: Hãy đóng vai chuyên viên tuyển dụng và viết email mời...
     "></textarea>
             </div>
 
             <div class="button-bar">
                 <button class="btn-3d btn-green" id="btn-submit">
-                    ✔ Gửi Bài Giải
+                    ✔ Gửi Prompt
                 </button>
                 <button class="btn-3d btn-yellow" id="btn-hint">
-                    🦊 Nhận Gợi Ý Socratic
+                    🦊 Xem Gợi Ý Gợi Mở
                 </button>
                 <button class="btn-3d btn-blue" id="btn-slide">
-                    📄 Tra Cứu Slide
+                    📄 Xem Slide Đào Tạo HR
                 </button>
                 <button class="btn-3d btn-orange" id="btn-paste-sim">
-                    📋 Mô Phỏng Dán Bài (Cheat)
+                    📋 Dán Prompt Mẫu (Cheat)
                 </button>
             </div>
         </div>
 
-        <!-- Socratic Assistant Board -->
+        <!-- Prompter Assistant Board -->
         <div class="coach-sidebar">
             <div class="coach-profile">
                 <div class="coach-avatar">🦊</div>
                 <div class="coach-details">
                     <h3>Cáo Sofi</h3>
-                    <p>Gia sư Socratic của bạn</p>
+                    <p>Gia sư Lộ trình AI cho HR</p>
                 </div>
             </div>
 
             <div class="chat-bubble" id="coach-bubble">
-                Chào bạn! Mình là Sofi. Bạn hãy thử tự hoàn thành hàm <code>fib(n)</code> đệ quy nhé. Nếu gặp khó khăn, hãy bấm nút nhận gợi ý bên dưới, mình sẽ hỗ trợ bạn từng bước để hiểu bản chất!
+                Chào bạn! Mình là Sofi. Bạn hãy tự viết một prompt để AI soạn Email mời phỏng vấn nhé. Bấm nút nhận gợi ý nếu cần, mình sẽ chỉ dẫn từng thành phần cấu trúc prompt để bạn tự hoàn thiện!
             </div>
 
             <div id="citation-container" style="display: none;">
                 <div class="citation-tag">
-                    📄 Slide Bài Giảng 4 - Trang 15
+                    📄 Lộ trình AI cho HR - Chương 1 - Trang 12
                 </div>
             </div>
         </div>
@@ -513,8 +502,8 @@ def fib(n):
     <div class="alert-overlay" id="alert-overlay">
         <div class="alert-box" id="alert-box">
             <div class="alert-icon" id="alert-icon">🚨</div>
-            <div class="alert-title" id="alert-title">Academic Integrity Warning</div>
-            <div class="alert-desc" id="alert-desc">Phát hiện hành động Copy-Paste mã nguồn từ bên ngoài! Hệ thống chống gian lận đã kích hoạt.</div>
+            <div class="alert-title" id="alert-title">Academic Integrity Alert</div>
+            <div class="alert-desc" id="alert-desc">Phát hiện hành động Sao chép-Dán (Copy-Paste) prompt mẫu bên ngoài! Hệ thống khóa tăng điểm ELO cho lượt làm bài này.</div>
             <button class="btn-3d btn-orange" id="btn-alert-close" style="width: 100%;">Tôi Đã Hiểu</button>
         </div>
     </div>
@@ -604,11 +593,11 @@ def fib(n):
         let hintLevel = 0;
         let cheatTriggered = false;
 
-        // Hint ladders
-        const socraticHints = [
-            "Đệ quy cần có điểm dừng (Base case). Với số n nhỏ nhất nào (ví dụ: n=0 hay n=1) thì hàm <code>fib(n)</code> có thể trả về giá trị ngay mà không cần gọi lại chính nó?",
-            "Chính xác! base case sẽ là: <code>if n <= 1: return n</code>. Vậy với n > 1, công thức Fibonacci tổng quát dựa trên hai số đứng trước nó là gì?",
-            "Tuyệt vời! Công thức tổng quát là <code>fib(n-1) + fib(n-2)</code>. Bây giờ, hãy viết một hàm Python hoàn chỉnh kết hợp cả hai điều kiện trên nhé!"
+        // Hint ladders (specific to HR prompting)
+        const prompterHints = [
+            "Để email mời phỏng vấn đầy đủ thông tin, prompt của bạn cần có thông tin đầu vào cơ bản: Vai trò ứng tuyển (Web Developer), tên ứng viên và tên công ty. Bạn đã đưa các yếu tố này vào prompt chưa?",
+            "Rất tốt! Hãy bổ sung thêm yêu cầu về <strong>thời gian phỏng vấn, địa điểm (Online hoặc Offline tại văn phòng)</strong> và số điện thoại liên hệ của bạn để ứng viên dễ dàng phản hồi nhé.",
+            "Tuyệt vời! Một cấu trúc prompt mẫu đầy đủ: <code>'Hãy viết email mời phỏng vấn ứng viên Nguyễn Văn A cho vị trí Web Developer tại công ty X, thời gian ngày mai hoặc chọn lịch hẹn phù hợp, kèm theo thông tin liên hệ của HR.'</code> Hãy tự viết lại phiên bản prompt của riêng bạn!"
         ];
 
         // Sfx setup for interactive elements
@@ -619,7 +608,7 @@ def fib(n):
         // Hint button interaction
         btnHint.addEventListener('click', () => {
             if (cheatTriggered) {
-                showModal("🚨 Đã Bị Khóa Gợi Ý", "Tài khoản của bạn đang bị đóng băng điểm ELO do phát hiện hành động sao chép mã nguồn từ ngoài. Hãy tự viết lại từ đầu.", "warning");
+                showModal("🚨 Đã Bị Đóng Băng", "Điểm năng lực và hỗ trợ gợi ý của bạn tạm thời bị khóa do hệ thống phát hiện hành động sao chép prompt từ ngoài.", "warning");
                 return;
             }
             
@@ -631,33 +620,33 @@ def fib(n):
             masteryBar.style.width = mastery + '%';
             masteryText.innerText = mastery + '%';
             
-            const hintIndex = Math.min(hintLevel - 1, socraticHints.length - 1);
-            coachBubble.innerHTML = `🦊 <strong>Gợi ý ${hintLevel}:</strong> ` + socraticHints[hintIndex];
+            const hintIndex = Math.min(hintLevel - 1, prompterHints.length - 1);
+            coachBubble.innerHTML = `🦊 <strong>Gợi ý ${hintLevel}:</strong> ` + prompterHints[hintIndex];
             citationContainer.style.display = 'block';
             playSound('hint');
         });
 
         // Slide check
         btnSlide.addEventListener('click', () => {
-            coachBubble.innerHTML = "🦊 <strong>Sofi đã tìm thấy tài liệu giúp bạn:</strong><br>📄 <strong>Slide Bài Giảng 4 - Trang 15:</strong><br><em>Định nghĩa số Fibonacci: F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2) cho n > 1.</em>";
+            coachBubble.innerHTML = "🦊 <strong>Sofi đã mở slide đào tạo cho bạn:</strong><br>📄 <strong>Lộ trình AI cho HR - Chương 1 - Trang 12:</strong><br><em>Cấu trúc chuẩn của một email mời phỏng vấn gồm: Lời chào thân mật, vị trí tuyển dụng, đề xuất thời gian & địa điểm phỏng vấn, thông tin liên lạc và nút CTA/phản hồi.</em>";
             citationContainer.style.display = 'block';
         });
 
         // Copy-Paste Detection
         editor.addEventListener('paste', (e) => {
-            e.preventDefault(); // Block the paste action!
+            e.preventDefault(); // Block direct paste to force writing
             triggerCheatDetection();
         });
 
         btnPasteSim.addEventListener('click', () => {
-            editor.value = "def fib(n):\n    if n <= 1:\n        return n\n    return fib(n-1) + fib(n-2)";
+            editor.value = "Hãy viết email mời phỏng vấn ứng viên Nguyễn Văn A cho vị trí Web Developer vào lúc 9:00 sáng mai tại văn phòng công ty X.";
             triggerCheatDetection();
         });
 
         function triggerCheatDetection() {
             cheatTriggered = true;
             playSound('warning');
-            showModal("🚨 Academic Integrity Alert!", "Hệ thống phát hiện hành động sao chép-dán mã nguồn (Copy-Paste) từ clipboard bên ngoài vào. Điểm ELO của bạn đã bị đóng băng (+0 ELO) và hành vi này đã được gửi báo cáo lên giảng viên.", "warning");
+            showModal("🚨 Academic Integrity Warning", "Phát hiện hành động Copy-Paste prompt mẫu từ bên ngoài vào hệ thống học tập! Điểm ELO của bạn đã bị khóa (+0 ELO). Dữ liệu hành vi đã được đồng bộ để HR Manager hỗ trợ riêng.", "warning");
             document.getElementById('elo-card').style.borderColor = 'var(--color-red)';
             document.getElementById('elo-card').style.borderBottomColor = 'var(--color-red-dark)';
             document.getElementById('elo-card').style.color = 'var(--color-red)';
@@ -665,13 +654,15 @@ def fib(n):
 
         // Submit action
         btnSubmit.addEventListener('click', () => {
-            const code = editor.value.replace(/\s+/g, '');
-            const hasBase = code.includes("n<=1") || code.includes("n==0") || code.includes("n<2");
-            const hasRec = code.includes("fib(n-1)+fib(n-2)") || code.includes("fib(n-2)+fib(n-1)");
+            const promptText = editor.value.toLowerCase().trim();
             
-            if (hasBase && hasRec) {
+            const hasEmail = promptText.includes("email") || promptText.includes("thư") || promptText.includes("mail");
+            const hasInvite = promptText.includes("mời") || promptText.includes("phỏng vấn");
+            const hasDev = promptText.includes("web") || promptText.includes("developer") || promptText.includes("lập trình");
+            
+            if (hasEmail && hasInvite && hasDev) {
                 if (cheatTriggered) {
-                    showModal("✔ Kết Quả Đúng", "Mã nguồn chính xác. Tuy nhiên, điểm số không thay đổi vì bạn đã dán code gian lận trước đó.", "warning");
+                    showModal("✔ Kết Quả Đúng", "Prompt đầy đủ thông tin cần thiết. Tuy nhiên, điểm ELO và mức độ tinh thông không đổi do bạn đã dán prompt có sẵn trước đó.", "warning");
                 } else {
                     const eloGain = Math.max(5, 25 - (hintLevel * 5));
                     elo += eloGain;
@@ -682,12 +673,12 @@ def fib(n):
                     masteryText.innerText = '100%';
                     
                     playSound('success');
-                    showModal("🎉 Xuất Sắc!", `Bạn đã giải quyết câu hỏi thành công!<br>📈 ELO tăng: <strong>+${eloGain} ELO</strong><br>🧠 Mức độ mastery: <strong>100% (Tinh thông)</strong>`, "success");
-                    coachBubble.innerHTML = "🦊 <strong>Chúc mừng!</strong> Bạn đã làm rất tốt khi tự tay giải quyết bài toán đệ quy này. Hãy tiếp tục phát huy ở các bài tập sau nhé!";
+                    showModal("🎉 Tinh Thông Prompt!", `Viết prompt xuất sắc!<br>📈 Tăng điểm: <strong>+${eloGain} ELO</strong><br>🧠 Mức độ tinh thông: <strong>100% (Đã làm chủ)</strong>`, "success");
+                    coachBubble.innerHTML = "🦊 <strong>Tuyệt vời!</strong> Bạn đã tự thiết kế một prompt hoàn chỉnh và chất lượng để AI sinh ra email tuyển dụng tốt nhất. Hãy tiếp tục luyện tập nhé!";
                 }
             } else {
                 playSound('warning');
-                showModal("❌ Bài Giải Chưa Đúng", "Cú pháp đệ quy chưa chính xác hoặc thiếu trường hợp cơ bản (base case). Hãy thử xem gợi ý Socratic của mình nhé!", "error");
+                showModal("❌ Prompt Chưa Đạt Chuẩn", "Prompt còn quá ngắn hoặc thiếu thông tin vai trò tuyển dụng/mục đích email. Hãy thử nhấn xem gợi ý từ mình nhé!", "error");
             }
         });
 

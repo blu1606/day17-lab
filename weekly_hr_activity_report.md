@@ -1,25 +1,4 @@
-# -*- coding: utf-8 -*-
-import time
-import sys
-import os
-
-# Đảm bảo in đúng tiếng Việt trên terminal Windows/VSCode
-if sys.platform.startswith('win'):
-    import ctypes
-    kernel32 = ctypes.windll.kernel32
-    kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
-
-def generate_report():
-    print("🤖 AI Trợ Lý - Wizard of Oz Reporter đang chạy...")
-    time.sleep(0.5)
-    print("⏳ Đang phân tích dữ liệu tương tác của nhóm 8 nhân viên HR thử nghiệm...")
-    time.sleep(1.0)
-    print("📊 Đang tổng hợp số giờ tiết kiệm & số ngày active hàng tuần...")
-    time.sleep(0.8)
-    print("💡 Đang thiết kế dàn slide reteach bổ trợ cho tuần tới...")
-    time.sleep(0.7)
-
-    report_content = r"""# 📊 Báo cáo Hoạt động Tuần & MVP Validation (Weekly HR Activity Report)
+# 📊 Báo cáo Hoạt động Tuần & MVP Validation (Weekly HR Activity Report)
 **Dự án:** AI Trợ Lý (Phân khúc Nhân sự - HR) — Nhóm 09  
 **Nội dung thử nghiệm:** Lộ trình AI sát công việc HR (Tuần 1: Luyện viết Prompt tuyển dụng)  
 **Quy mô mẫu test:** 8 nhân viên HR thực tế  
@@ -90,23 +69,3 @@ Hệ thống ghi nhận mức độ tương tác và phát hiện sao chép prom
 1. Dữ liệu báo cáo hiệu suất và số giờ tiết kiệm của nhân viên HR tuần này có đủ thuyết phục thầy/cô duyệt ngân sách mua sản phẩm không?
 2. Thầy/cô có muốn bổ sung thêm các tác vụ HR nào khác vào Lộ trình AI tuần tới không?
 3. Thầy/cô thấy giao diện và báo cáo này hiển thị rõ ràng, trực quan chưa?
-"""
-
-    # Ghi file báo cáo HR mới
-    with open("weekly_hr_activity_report.md", "w", encoding="utf-8") as f:
-        f.write(report_content)
-
-    # Xóa file báo cáo cũ nếu tồn tại để tránh rác
-    if os.path.exists("weekly_concept_gap_report.md"):
-        try:
-            os.remove("weekly_concept_gap_report.md")
-            print("🧹 Đã xóa file báo cáo cũ weekly_concept_gap_report.md")
-        except Exception as e:
-            pass
-
-    print("\n✅ Tạo báo cáo hoạt động tuần của HR thành công!")
-    print("📄 File báo cáo mới đã được lưu tại: weekly_hr_activity_report.md")
-    print("👉 Hãy gửi file markdown này cho Giảng viên / HR Manager để thu thập phản hồi.")
-
-if __name__ == "__main__":
-    generate_report()
